@@ -3,6 +3,9 @@
 ## Synopsis
 The `cdr.ps1` PowerShell script processes JSON data from a specified file path and generates reports for organizations and parties at the specified report location.
 
+## Compatibility
+Developed and Tested in PowerShell 5.1 (Default on Windows)
+
 ## Usage
 
 ## Parameters
