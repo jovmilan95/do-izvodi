@@ -1,0 +1,34 @@
+{
+  "date": "2024-03-02",
+  "organizations": [
+    {
+      "id": "08926",
+      "parties": [
+        {
+          "id": "0000000026640",
+          "lastActivity": "2024-03-02",
+          "type": "internal",
+          "organizationId": "08926"
+        },
+        {
+          "id": "0000001916740",
+          "lastActivity": "2024-03-02",
+          "type": "internal",
+          "organizationId": "08926"
+        },
+        {
+          "id": "0000220065653",
+          "lastActivity": "2023-03-02",
+          "type": "external",
+          "organizationId": "12506"
+        },
+        {
+          "id": "0002359167403",
+          "lastActivity": "2023-03-02",
+          "type": "external",
+          "organizationId": "12507"
+        }
+      ]
+    }
+  ]
+}
