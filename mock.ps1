@@ -42,16 +42,20 @@ function GenerateOrganizations {
       # with each section randomly selecting a number.
       $step = [Math]::Floor(100000 / $count)
       for ($i = 1; $i -le $count; $i++) {
-          $minRange = ($i - 1) * $step 
-          $maxRange = $i * $step - 1
-          $randomId = Get-Random -Minimum $minRange -Maximum $maxRange
-          $organizations += [PSCustomObject]@{
-              Id      = $randomId.ToString("00000")
-              InternalParties = @()
-              ExternalParties = @()
-          }
-      }
-      return $organizations
+        $minRange = ($i - 1) * $step 
+        $maxRange = $i * $step - 1
+        if ($minRange -eq $maxRange) {
+            $randomId = $maxRange
+        } else {
+            $randomId = Get-Random -Minimum $minRange -Maximum $maxRange
+        }
+        $organizations += [PSCustomObject]@{
+            Id      = $randomId.ToString("00000")
+            InternalParties = @()
+            ExternalParties = @()
+        }
+    }
+    return $organizations
   }
 function GenerateParties {
     param (
@@ -82,11 +86,15 @@ function GenerateDates {
           throw "Err maximum limit of 60 dates can be generated."
       }
       $dates = @()
-      $step = [int](60 / $count)
+      $step = [Math]::Floor(60 / $count)
       for ($i = 1; $i -le $count; $i++) {
           $minRange = ($i - 1) * $step 
           $maxRange = $i * $step -1 
-          $randomNumber = Get-Random -Minimum $minRange -Maximum $maxRange
+          if ($minRange -eq $maxRange) {
+            $randomId = $maxRange
+          } else {
+            $randomNumber = Get-Random -Minimum $minRange -Maximum $maxRange
+          }
           $dates += (Get-Date).AddDays(-$randomNumber).ToString("yyyy-MM-dd")
       }
   
@@ -131,7 +139,11 @@ function GenerateOrganizationBundle {
         for ($i = 1; $i -le $numberOfExternalPartiesPerOrganization; $i++) {
             $minRange = ($i - 1) * $step 
             $maxRange = $i * $step - 1
-            $randomIndex = Get-Random -Minimum $minRange -Maximum $maxRange
+            if ($minRange -eq $maxRange) {
+                $randomIndex = $maxRange
+            } else {
+                $randomIndex = Get-Random -Minimum $minRange -Maximum $maxRange
+            }
             $org.ExternalParties += $externalPartis[$randomIndex]
         }
     }
@@ -188,8 +200,8 @@ function ApplyToFileSystem {
     }
 }
 
-if ($NumberOfPartiesPerOrganization -gt ($NumberOfOrganizations - 1) * $NumberOfPartiesPerOrganization) {
-    WriteLog "NumberOfPartiesPerOrganization is out of valid range."
+if ($NumberOfExternalPartiesPerOrganization -gt ($NumberOfOrganizations - 1) * $NumberOfPartiesPerOrganization) {
+    Write-Host "NumberOfExternalPartiesPerOrganization is out of valid range."
     exit
 }
 
