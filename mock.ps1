@@ -204,7 +204,7 @@ function GenerateOranizationIndex {
         }
     #>
 
-    $orgIndex = @{} 
+    $orgIndex = [ordered]@{} 
     $orgIndex[$organization.Id.ToString()] = @()
     $organization.ExternalParties | ForEach-Object { $orgIndex[$_.OriginOrganization] = @() }
   
