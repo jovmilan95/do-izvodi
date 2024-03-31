@@ -62,6 +62,22 @@ function GenerateParties {
         [int]$count = 1,
         [int]$numberOfActiveDates = 1
     )
+    <#
+        Generates parties and returns them in the format:
+        [
+            {
+                Id: party1,
+                Dates: [ "2022-02-03", "2022-02-04" ],
+                OriginOrganization: ""
+            },
+            {
+                Id: party2,
+                Dates: [ "2022-02-03", "2022-02-05" ],
+                OriginOrganization: ""
+            }
+                
+        ]
+    #>
       $parties = @()
       # Total party IDs are segmented into $count sections,
       # with each section randomly selecting a number.
@@ -82,6 +98,9 @@ function GenerateDates {
     param (
         [int]$count = 1
     )
+    <#
+    "Returns an array of dates as an array of strings for the past 60 days."
+    #>
       if ($count -ge 60) {
           throw "Err maximum limit of 60 dates can be generated."
       }
@@ -108,6 +127,28 @@ function GenerateOrganizationBundle {
       [int]$numberOfExternalPartiesPerOrganization = 1,
       [int]$numberOfDatesPerParty = 1
   )
+  <#
+        Generates organizations and returns them in the format:
+        [
+            {
+                Id: MB1
+                InternalParties: [
+                    {
+                        Id: party1,
+                        Dates: [ "2022-02-03", "2022-02-04" ],
+                        OriginOrganization: MB1
+                    }
+                ]
+                ExternalParties: [
+                    {
+                        Id: party2,
+                        Dates: [ "2022-02-03", "2022-02-04" ],
+                        OriginOrganization: MB2,
+                    }
+                ]
+            }
+        ]
+    #>
     $organizations = GenerateOrganizations -count $numberOfOrganizations
     $totalNumberOfParties = $numberOfPartiesPerOrganization * $numberOfOrganizations
     $parties = GenerateParties `
@@ -153,6 +194,16 @@ function GenerateOranizationIndex {
     param (
         [Object]$organization
     )
+    <#
+        The method generates organization indexes in the format:
+        {
+            "MB": [ "party11", "party12", ..., "party1N" ],
+            "MBX": [ "partyX1", "partyX2", ..., "partyXM" ],
+            ...
+            "MBY": [ "partyY1", ..., "partyYJ" ]
+        }
+    #>
+
     $orgIndex = @{} 
     $orgIndex[$organization.Id.ToString()] = @()
     $organization.ExternalParties | ForEach-Object { $orgIndex[$_.OriginOrganization] = @() }
@@ -166,6 +217,10 @@ function ApplyToFileSystem {
       [string]$rootPath,
       [Object[]]$organizations
   )
+  <#
+    Applies organization data to the file system from GenerateOrganizationBundle, 
+    creating files and occasional random files.
+  #>
     $count = 0
     foreach($org in $organizations) {
         foreach($party in $org.InternalParties) {
