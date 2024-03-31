@@ -153,7 +153,7 @@ function GenerateOrganizationBundle {
     $totalNumberOfParties = $numberOfPartiesPerOrganization * $numberOfOrganizations
     $parties = GenerateParties `
                 -count $totalNumberOfParties `
-                -numberOfDatesPerParty $numberOfDatesPerParty
+                -numberOfActiveDates $numberOfDatesPerParty
    
     # Parties are segmented based on organizations, 
     # with each segment assigned to a single organization.
