@@ -9,7 +9,7 @@ function WriteLog([string]$message) {
     $currentDateTime = Get-Date
     $elapsedTime = $currentDateTime - $startTime
     $formattedTime = '{0:HH:mm:ss} [{1:hh\:mm\:ss}]' -f $currentDateTime, $elapsedTime
-    $logMessage = "$formattedTime $repeatedString $message"
+    $logMessage = "$formattedTime $message"
     Add-content $logFile -value $logMessage
     Write-Host $logMessage
 }
