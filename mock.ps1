@@ -25,8 +25,8 @@ function GenerateRandomFileName {
 }
 function IsItTimeForRandomEvent {
     param ()
-    $a = (Get-Random -Minimum 10 -Maximum 2000)
-    $b = (Get-Random -Minimum 10 -Maximum 1000)
+    $a = (Get-Random -Minimum 10 -Maximum 100)
+    $b = (Get-Random -Minimum 10 -Maximum 50)
     return ($a % $b) -eq 0
 }
 function GenerateOrganizations {
