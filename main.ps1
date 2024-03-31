@@ -80,10 +80,8 @@ foreach($organization in $organizations) {
     
         } catch [System.FormatException] {
             WriteLog $_.Exception.Message
-            continue
         } catch {
             WriteLog "Err was encountered during the creation of the zip archive. Message: $($_.Exception.Message)"
-            continue
         } finally {
             if (Test-Path $workingDirectory) {
                 Remove-Item -Path $workingDirectory -Recurse -Force
