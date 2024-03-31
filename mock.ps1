@@ -101,7 +101,7 @@ function GenerateDates {
     <#
     "Returns an array of dates as an array of strings for the past 60 days."
     #>
-      if ($count -ge 60) {
+      if ($count -gt 60) {
           throw "Err maximum limit of 60 dates can be generated."
       }
       $dates = @()
@@ -110,7 +110,7 @@ function GenerateDates {
           $minRange = ($i - 1) * $step 
           $maxRange = $i * $step -1 
           if ($minRange -eq $maxRange) {
-            $randomId = $maxRange
+            $randomNumber = $maxRange
           } else {
             $randomNumber = Get-Random -Minimum $minRange -Maximum $maxRange
           }
