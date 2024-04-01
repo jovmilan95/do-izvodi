@@ -39,9 +39,9 @@ foreach ($organization in $organizations) {
         continue
     }
     
-    $organizationIds = $parties.psobject.Properties | Select-Object -ExpandProperty Name
+    [array]$organizationIds = $parties.psobject.Properties | Select-Object -ExpandProperty Name
     $partesRegex = ($parties.psobject.Properties | Select-Object -ExpandProperty Value) -join "|"
- 
+
     $dates = Get-ChildItem -Path $rootPath -File -Recurse | `
         Where-Object { $organizationIds -Contains $_.Directory.Parent.Name } | `
         Where-Object { $_.Directory.Name -match '^\d{4}-\d{2}-\d{2}$' } | `
