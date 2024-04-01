@@ -1,25 +1,25 @@
 param (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$Destination,
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [ValidateRange(1, 99999)]
     [int]$NumberOfOrganizations = $(Get-Random -Minimum 1 -Maximum 20),
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [ValidateRange(1, [int]::MaxValue)]
     [int]$NumberOfPartiesPerOrganization = $(Get-Random -Minimum 1 -Maximum 20),
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [ValidateRange(1, [int]::MaxValue)]
     [int]$NumberOfExternalPartiesPerOrganization = `
-            $(Get-Random -Minimum 0 -Maximum $NumberOfPartiesPerOrganization),
-    [Parameter(Mandatory=$false)]
+    $(Get-Random -Minimum 0 -Maximum $NumberOfPartiesPerOrganization),
+    [Parameter(Mandatory = $false)]
     [ValidateRange(1, 60)]
     [int]$NumberOfDatesPerParty = $(Get-Random -Minimum 1 -Maximum 10)
 )
 function GenerateRandomFileName {
     param ()
-    $extensions = @("pdf","json","txt","md","xml","csv")
+    $extensions = @("pdf", "json", "txt", "md", "xml", "csv")
     $length = 10
-    $baseName = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $length | ForEach-Object {[char]$_})
+    $baseName = -join ((48..57) + (65..90) + (97..122) | Get-Random -Count $length | ForEach-Object { [char]$_ })
     $randomExtensionIndex = Get-Random -Minimum 0 -Maximum $extensions.Length
     return "$baseName.$($extensions[$randomExtensionIndex])"
 }
@@ -34,29 +34,30 @@ function GenerateOrganizations {
         [int]$count
         
     )
-      if ($count -ge 100000) {
-          throw "Err maximum limit of 99999 organizations can be generated."
-      }
-      $organizations = @()
-      # Total organization IDs are segmented into $count sections,
-      # with each section randomly selecting a number.
-      $step = [Math]::Floor(100000 / $count)
-      for ($i = 1; $i -le $count; $i++) {
+    if ($count -ge 100000) {
+        throw "Err maximum limit of 99999 organizations can be generated."
+    }
+    $organizations = @()
+    # Total organization IDs are segmented into $count sections,
+    # with each section randomly selecting a number.
+    $step = [Math]::Floor(100000 / $count)
+    for ($i = 1; $i -le $count; $i++) {
         $minRange = ($i - 1) * $step 
         $maxRange = $i * $step - 1
         if ($minRange -eq $maxRange) {
             $randomId = $maxRange
-        } else {
+        }
+        else {
             $randomId = Get-Random -Minimum $minRange -Maximum $maxRange
         }
         $organizations += [PSCustomObject]@{
-            Id      = $randomId.ToString("00000")
+            Id              = $randomId.ToString("00000")
             InternalParties = @()
             ExternalParties = @()
         }
     }
     return $organizations
-  }
+}
 function GenerateParties {
     param (
         [int]$count = 1,
@@ -78,22 +79,22 @@ function GenerateParties {
                 
         ]
     #>
-      $parties = @()
-      # Total party IDs are segmented into $count sections,
-      # with each section randomly selecting a number.
-      $step = [int]([int]::MaxValue / $count)
-      for ($i = 1; $i -le $count; $i++) {
-          $minRange = ($i - 1) * $step 
-          $maxRange = $i * $step -1 
-          $randomId = Get-Random -Minimum $minRange -Maximum $maxRange
-          $parties += [PSCustomObject]@{
-              Id                 = $randomId.ToString("0000000000000")
-              Dates              = GenerateDates($numberOfActiveDates)
-              OriginOrganization = ""
-          }
-      }
-      return $parties
-  }
+    $parties = @()
+    # Total party IDs are segmented into $count sections,
+    # with each section randomly selecting a number.
+    $step = [int]([int]::MaxValue / $count)
+    for ($i = 1; $i -le $count; $i++) {
+        $minRange = ($i - 1) * $step 
+        $maxRange = $i * $step - 1 
+        $randomId = Get-Random -Minimum $minRange -Maximum $maxRange
+        $parties += [PSCustomObject]@{
+            Id                 = $randomId.ToString("0000000000000")
+            Dates              = GenerateDates($numberOfActiveDates)
+            OriginOrganization = ""
+        }
+    }
+    return $parties
+}
 function GenerateDates {
     param (
         [int]$count = 1
@@ -101,33 +102,34 @@ function GenerateDates {
     <#
     "Returns an array of dates as an array of strings for the past 60 days."
     #>
-      if ($count -gt 60) {
-          throw "Err maximum limit of 60 dates can be generated."
-      }
-      $dates = @()
-      $step = [Math]::Floor(60 / $count)
-      for ($i = 1; $i -le $count; $i++) {
-          $minRange = ($i - 1) * $step 
-          $maxRange = $i * $step -1 
-          if ($minRange -eq $maxRange) {
+    if ($count -gt 60) {
+        throw "Err maximum limit of 60 dates can be generated."
+    }
+    $dates = @()
+    $step = [Math]::Floor(60 / $count)
+    for ($i = 1; $i -le $count; $i++) {
+        $minRange = ($i - 1) * $step 
+        $maxRange = $i * $step - 1 
+        if ($minRange -eq $maxRange) {
             $randomNumber = $maxRange
-          } else {
+        }
+        else {
             $randomNumber = Get-Random -Minimum $minRange -Maximum $maxRange
-          }
-          $dates += (Get-Date).AddDays(-$randomNumber).ToString("yyyy-MM-dd")
-      }
+        }
+        $dates += (Get-Date).AddDays(-$randomNumber).ToString("yyyy-MM-dd")
+    }
   
     return $dates
-  }
+}
 
 function GenerateOrganizationBundle {
- param (
-      [int]$numberOfOrganizations = 1,
-      [int]$numberOfPartiesPerOrganization = 1,
-      [int]$numberOfExternalPartiesPerOrganization = 1,
-      [int]$numberOfDatesPerParty = 1
-  )
-  <#
+    param (
+        [int]$numberOfOrganizations = 1,
+        [int]$numberOfPartiesPerOrganization = 1,
+        [int]$numberOfExternalPartiesPerOrganization = 1,
+        [int]$numberOfDatesPerParty = 1
+    )
+    <#
         Generates organizations and returns them in the format:
         [
             {
@@ -152,8 +154,8 @@ function GenerateOrganizationBundle {
     $organizations = GenerateOrganizations -count $numberOfOrganizations
     $totalNumberOfParties = $numberOfPartiesPerOrganization * $numberOfOrganizations
     $parties = GenerateParties `
-                -count $totalNumberOfParties `
-                -numberOfActiveDates $numberOfDatesPerParty
+        -count $totalNumberOfParties `
+        -numberOfActiveDates $numberOfDatesPerParty
    
     # Parties are segmented based on organizations, 
     # with each segment assigned to a single organization.
@@ -168,11 +170,10 @@ function GenerateOrganizationBundle {
         return $organizations
     } 
     
-    foreach($org in $organizations) {
+    foreach ($org in $organizations) {
         $externalPartis = $parties | Where-Object { $_.OriginOrganization -ne $org.Id }
         # External parties array is segmented based on the number of organizations, 
         # and then one random party is selected from each segment.
-        $rv = $externalPartis.Length / $numberOfExternalPartiesPerOrganization 
         $step = [Math]::Floor($externalPartis.Length / $numberOfExternalPartiesPerOrganization )
         if ($step -eq 0) {
             continue
@@ -182,7 +183,8 @@ function GenerateOrganizationBundle {
             $maxRange = $i * $step - 1
             if ($minRange -eq $maxRange) {
                 $randomIndex = $maxRange
-            } else {
+            }
+            else {
                 $randomIndex = Get-Random -Minimum $minRange -Maximum $maxRange
             }
             $org.ExternalParties += $externalPartis[$randomIndex]
@@ -213,20 +215,19 @@ function GenerateOranizationIndex {
     return $orgIndex 
 }
 function ApplyToFileSystem {
-  param (
-      [string]$rootPath,
-      [Object[]]$organizations
-  )
-  <#
+    param (
+        [string]$rootPath,
+        [Object[]]$organizations
+    )
+    <#
     Applies organization data to the file system from GenerateOrganizationBundle, 
     creating files and occasional random files.
   #>
-    $count = 0
-    foreach($org in $organizations) {
-        foreach($party in $org.InternalParties) {
-            foreach($date in $party.Dates) {
+    foreach ($org in $organizations) {
+        foreach ($party in $org.InternalParties) {
+            foreach ($date in $party.Dates) {
                 $extensions = @("pdf", "json", "txt")
-                foreach($extension in $extensions) {
+                foreach ($extension in $extensions) {
                     $dir = Join-Path $rootPath $org.Id $date
                     $filePath = Join-Path $dir "$($party.Id).$extension"
                     
