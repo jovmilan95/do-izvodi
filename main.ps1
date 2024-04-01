@@ -43,7 +43,7 @@ foreach ($organization in $organizations) {
     $partesRegex = ($parties.psobject.Properties | Select-Object -ExpandProperty Value) -join "|"
  
     $dates = Get-ChildItem -Path $rootPath -File -Recurse | `
-        Where-Object { $organizationIds -eq $_.Directory.Parent.Name } | `
+        Where-Object { $organizationIds -Contains $_.Directory.Parent.Name } | `
         Where-Object { $_.Directory.Name -match '^\d{4}-\d{2}-\d{2}$' } | `
         Where-Object { $_.Name -match "($partesRegex)\.(json|txt|pdf)\.zip$" } | `
         Select-Object -ExpandProperty Directory -Unique
